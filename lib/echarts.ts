@@ -9,7 +9,7 @@ export const T = {
   neg: "#ef4444",
   neutral: "#f59e0b",
   accent: "#6366f1",
-  font: 'ui-monospace, "Cascadia Code", "JetBrains Mono", monospace',
+  font: '"JetBrains Mono", ui-monospace, monospace',
 } as const;
 
 export const SERIES_COLORS = [

@@ -230,8 +230,13 @@ export const fetchAlgos = () => get<AlgoConfig[]>("/api/algos");
 
 export const fetchSettings = () => get<{ candle_intervals: string[] }>("/api/settings");
 
-export const fetchSignals = (sessionId = "") =>
-  get<Signal[]>(`/api/signals${sessionId ? `?session_id=${encodeURIComponent(sessionId)}` : ""}`);
+export const fetchSignals = (sessionId = "", algoName = "") => {
+  const params = new URLSearchParams();
+  if (sessionId) params.set("session_id", sessionId);
+  if (algoName) params.set("algo_name", algoName);
+  const qs = params.toString();
+  return get<Signal[]>(`/api/signals${qs ? `?${qs}` : ""}`);
+};
 
 export const fetchCandles = (symbol: string, interval: string, limit = 200) =>
   get<Candle[]>(`/api/candles?symbol=${symbol}&interval=${interval}&limit=${limit}`);
@@ -239,16 +244,48 @@ export const fetchCandles = (symbol: string, interval: string, limit = 200) =>
 export const fetchTicks = (symbol: string, limit = 500) =>
   get<Tick[]>(`/api/ticks?symbol=${symbol}&limit=${limit}`);
 
-export const fetchPnl = (sessionId = "") =>
-  get<PnlResponse>(`/api/pnl${sessionId ? `?session_id=${encodeURIComponent(sessionId)}` : ""}`);
+export const fetchPnl = (sessionId = "", algoName = "") => {
+  const params = new URLSearchParams();
+  if (sessionId) params.set("session_id", sessionId);
+  if (algoName) params.set("algo_name", algoName);
+  const qs = params.toString();
+  return get<PnlResponse>(`/api/pnl${qs ? `?${qs}` : ""}`);
+};
 
-export const fetchCharts = (sessionId = "", limit = 500) => {
+export const fetchCharts = (sessionId = "", algoName = "", limit = 500) => {
   const params = new URLSearchParams({ limit: String(limit) });
   if (sessionId) params.set("session_id", sessionId);
+  if (algoName) params.set("algo_name", algoName);
   return get<ChartsResponse>(`/api/charts?${params}`);
 };
 
+export type PnlByAlgo = Record<string, { gross: number; costs: number; net: number }>;
+
+export const fetchPnlByAlgo = () => get<PnlByAlgo>("/api/pnl/by-algo");
+
 export const fetchSessions = () => get<(string | null)[]>("/api/sessions");
+
+// ---------------------------------------------------------------------------
+// Auth endpoints
+// ---------------------------------------------------------------------------
+
+export const fetchLoginUrl = () => get<{ url: string }>("/api/auth/login-url");
+
+export interface AuthCallbackResult {
+  ok: boolean;
+  user_name: string;
+  login_time: string;
+}
+
+export const postAuthCallback = (request_token: string): Promise<AuthCallbackResult> =>
+  fetch("/api/auth/callback", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ request_token }),
+  }).then((res) => {
+    if (!res.ok) return res.json().then((e) => Promise.reject(new Error(e.detail ?? res.statusText)));
+    return res.json() as Promise<AuthCallbackResult>;
+  });
 
 // ---------------------------------------------------------------------------
 // Report endpoints

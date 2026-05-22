@@ -7,7 +7,7 @@ const MAX_EVENTS = 200;
 
 export type SSEStatus = "connecting" | "live" | "reconnecting";
 
-export function useDecisionStream(sessionId: string) {
+export function useDecisionStream(sessionId: string, algoName = "") {
   const [events, setEvents] = useState<DecisionEvent[]>([]);
   const [status, setStatus] = useState<SSEStatus>("connecting");
   const esRef = useRef<EventSource | null>(null);
@@ -16,7 +16,11 @@ export function useDecisionStream(sessionId: string) {
     if (esRef.current) {
       esRef.current.close();
     }
-    const url = `/api/decisions/stream${sessionId ? `?session_id=${encodeURIComponent(sessionId)}` : ""}`;
+    const params = new URLSearchParams();
+    if (sessionId) params.set("session_id", sessionId);
+    if (algoName) params.set("algo_name", algoName);
+    const qs = params.toString();
+    const url = `/api/decisions/stream${qs ? `?${qs}` : ""}`;
     const es = new EventSource(url);
     esRef.current = es;
 
@@ -33,7 +37,7 @@ export function useDecisionStream(sessionId: string) {
         // ignore parse errors
       }
     };
-  }, [sessionId]);
+  }, [sessionId, algoName]);
 
   useEffect(() => {
     connect();

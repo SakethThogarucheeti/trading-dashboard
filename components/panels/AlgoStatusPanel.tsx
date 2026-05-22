@@ -5,10 +5,12 @@ import { fetchAlgos } from "@/lib/api";
 import { WarmupBar } from "@/components/charts/WarmupBar";
 import { T } from "@/lib/echarts";
 import { formatTimeIST } from "@/lib/format";
+import { useDashboardStore } from "@/store";
 
 const HIDDEN_STATE_KEYS = new Set(["bars_seen", "warmup_complete", "last_signal_at"]);
 
 export function AlgoStatusPanel() {
+  const setAlgoName = useDashboardStore((s) => s.setAlgoName);
   const { data: algos = [] } = useQuery({
     queryKey: ["algos"],
     queryFn: fetchAlgos,
@@ -29,11 +31,13 @@ export function AlgoStatusPanel() {
         return (
           <div
             key={algo.name}
+            onClick={() => setAlgoName(algo.name)}
             style={{
               backgroundColor: T.bg,
               border: `1px solid ${T.border}`,
               borderRadius: 8,
               padding: 16,
+              cursor: "pointer",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>

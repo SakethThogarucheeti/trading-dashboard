@@ -49,9 +49,10 @@ export function LiveCharts() {
     refetchInterval: 30_000,
   });
 
+  const algoName = useDashboardStore((s) => s.algoName);
   const { data: charts = {} } = useQuery({
-    queryKey: ["charts", sessionId],
-    queryFn: () => fetchCharts(sessionId),
+    queryKey: ["charts", sessionId, algoName],
+    queryFn: () => fetchCharts(sessionId, algoName),
     refetchInterval: 30_000,
   });
 

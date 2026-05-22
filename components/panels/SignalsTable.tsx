@@ -28,9 +28,10 @@ function contextSummary(ctx: string): string {
 
 export function SignalsTable() {
   const sessionId = useDashboardStore((s) => s.sessionId);
+  const algoName = useDashboardStore((s) => s.algoName);
   const { data: signals = [] } = useQuery({
-    queryKey: ["signals", sessionId],
-    queryFn: () => fetchSignals(sessionId),
+    queryKey: ["signals", sessionId, algoName],
+    queryFn: () => fetchSignals(sessionId, algoName),
     refetchInterval: 10_000,
   });
 

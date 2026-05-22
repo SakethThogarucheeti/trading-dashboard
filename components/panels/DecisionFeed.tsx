@@ -22,7 +22,8 @@ function ctxSnippet(ctx: Record<string, unknown>): string {
 
 export function DecisionFeed() {
   const sessionId = useDashboardStore((s) => s.sessionId);
-  const { events, status } = useDecisionStream(sessionId);
+  const algoName = useDashboardStore((s) => s.algoName);
+  const { events, status } = useDecisionStream(sessionId, algoName);
 
   return (
     <div style={{ fontFamily: "ui-monospace, monospace" }}>
