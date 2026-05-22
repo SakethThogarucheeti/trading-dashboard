@@ -70,12 +70,39 @@ export const mockSessions: ReportSessionMeta[] = [
   },
 ];
 
+export const mockPnlByAlgo = {
+  ema_crossover: { gross: 1000, costs: 50, net: 950 },
+  rsi_mean_rev: { gross: -200, costs: 30, net: -230 },
+};
+
+export const mockAlgos = [
+  {
+    name: "ema_crossover",
+    strategy_id: "ema",
+    warmup_candles: 20,
+    candle_intervals: ["5min"],
+    equity: 100000,
+    enabled: true,
+    params: { fast: 5, slow: 20 },
+    state: { bars_seen: 25, warmup_complete: true, last_signal_at: "2026-05-01T10:00:00Z" },
+    updated_at: null,
+  },
+];
+
 export const handlers = [
   http.get("/api/reports/sessions", () => HttpResponse.json(mockSessions)),
   http.get("/api/reports/bt-test-001", () => HttpResponse.json(mockBacktestReport)),
   http.get("/api/reports/mc-test-001", () => HttpResponse.json(mockMonteCarloReport)),
   http.get("/api/positions", () => HttpResponse.json([])),
   http.get("/api/health", () => HttpResponse.json([])),
-  http.get("/api/algos", () => HttpResponse.json([])),
+  http.get("/api/algos", () => HttpResponse.json(mockAlgos)),
   http.get("/api/signals", () => HttpResponse.json([])),
+  http.get("/api/pnl/by-algo", () => HttpResponse.json(mockPnlByAlgo)),
+  http.get("/api/pnl", () =>
+    HttpResponse.json({
+      points: [],
+      summary: { gross: 0, costs: 0, net: 0, nifty_pct: null, nifty_open: null, nifty_close: null },
+    })
+  ),
+  http.get("/api/charts", () => HttpResponse.json({})),
 ];
