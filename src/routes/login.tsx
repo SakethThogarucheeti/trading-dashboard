@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { T } from "@/lib/echarts";
 import { fetchLoginUrl, postAuthCallback } from "@/lib/api";
+import { useDelayedRedirect } from "@/hooks/useDelayedRedirect";
 
 const searchSchema = z.object({
   request_token: z.string().optional(),
@@ -26,18 +27,25 @@ function LoginPage() {
 
   useEffect(() => {
     if (!request_token || status !== "success") return;
+    let cancelled = false;
     setState("exchanging");
     postAuthCallback(request_token)
       .then((result) => {
+        if (cancelled) return;
         setUserName(result.user_name);
         setState("success");
-        setTimeout(() => navigate({ to: "/" }), 2000);
       })
       .catch((err: unknown) => {
+        if (cancelled) return;
         setMessage(err instanceof Error ? err.message : String(err));
         setState("error");
       });
-  }, [request_token, status, navigate]);
+    return () => {
+      cancelled = true;
+    };
+  }, [request_token, status]);
+
+  useDelayedRedirect(navigate, state === "success");
 
   async function handleLogin() {
     setState("redirecting");
