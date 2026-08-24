@@ -4,24 +4,7 @@ import type { WalkForwardReport } from "@/lib/api";
 import { T } from "@/lib/echarts";
 import { formatPct } from "@/lib/format";
 import { EquityCurveChart } from "@/components/charts/EquityCurveChart";
-
-function MetricCard({ label, value, color }: { label: string; value: string; color?: string }) {
-  return (
-    <div
-      style={{
-        backgroundColor: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 8,
-        padding: "12px 16px",
-      }}
-    >
-      <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase", marginBottom: 4 }}>
-        {label}
-      </div>
-      <div style={{ color: color ?? T.text, fontSize: 20, fontWeight: 700 }}>{value}</div>
-    </div>
-  );
-}
+import { StatCard } from "@/components/ui/StatCard";
 
 export function WalkForwardView({ report }: { report: WalkForwardReport }) {
   return (
@@ -50,13 +33,13 @@ export function WalkForwardView({ report }: { report: WalkForwardReport }) {
 
       {/* Aggregate metrics */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-        <MetricCard label="Aggregate Sharpe" value={report.aggregate_sharpe.toFixed(3)} />
-        <MetricCard
+        <StatCard label="Aggregate Sharpe" value={report.aggregate_sharpe.toFixed(3)} />
+        <StatCard
           label="Aggregate Max DD"
           value={formatPct(report.aggregate_max_drawdown)}
           color={T.neg}
         />
-        <MetricCard
+        <StatCard
           label="Aggregate Win Rate"
           value={formatPct(report.aggregate_win_rate)}
           color={T.pos}
