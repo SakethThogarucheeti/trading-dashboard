@@ -6,8 +6,7 @@ import { WarmupBar } from "@/components/charts/WarmupBar";
 import { T } from "@/lib/echarts";
 import { formatTimeIST } from "@/lib/format";
 import { useDashboardStore } from "@/store";
-
-const HIDDEN_STATE_KEYS = new Set(["bars_seen", "warmup_complete", "last_signal_at"]);
+import { deriveAlgoDisplayState } from "@/lib/algoState";
 
 export function AlgoStatusPanel() {
   const setAlgoName = useDashboardStore((s) => s.setAlgoName);
@@ -21,11 +20,8 @@ export function AlgoStatusPanel() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {algos.length === 0 && <span style={{ color: T.muted, fontSize: 12 }}>No algos configured</span>}
       {algos.map((algo) => {
-        const barsSeen = Number(algo.state?.bars_seen ?? 0);
-        const warmupComplete = Boolean(algo.state?.warmup_complete);
-        const lastSignalAt = algo.state?.last_signal_at as string | undefined;
-        const stateEntries = Object.entries(algo.state ?? {}).filter(
-          ([k]) => !HIDDEN_STATE_KEYS.has(k),
+        const { barsSeen, warmupComplete, lastSignalAt, stateEntries } = deriveAlgoDisplayState(
+          algo.state,
         );
 
         return (

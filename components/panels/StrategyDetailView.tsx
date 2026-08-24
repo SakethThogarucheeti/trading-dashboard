@@ -11,8 +11,8 @@ import { T } from "@/lib/echarts";
 import { formatTimeIST, formatRupee } from "@/lib/format";
 import { useDashboardStore } from "@/store";
 import { fetchCharts } from "@/lib/api";
+import { deriveAlgoDisplayState } from "@/lib/algoState";
 
-const HIDDEN_STATE_KEYS = new Set(["bars_seen", "warmup_complete", "last_signal_at"]);
 const EMPTY_SUMMARY = { gross: 0, costs: 0, net: 0, nifty_pct: null, nifty_open: null, nifty_close: null };
 
 export function StrategyDetailView() {
@@ -37,10 +37,7 @@ export function StrategyDetailView() {
   });
 
   const algo = algos.find((a) => a.name === algoName);
-  const barsSeen = Number(algo?.state?.bars_seen ?? 0);
-  const warmupComplete = Boolean(algo?.state?.warmup_complete);
-  const lastSignalAt = algo?.state?.last_signal_at as string | undefined;
-  const stateEntries = Object.entries(algo?.state ?? {}).filter(([k]) => !HIDDEN_STATE_KEYS.has(k));
+  const { barsSeen, warmupComplete, lastSignalAt, stateEntries } = deriveAlgoDisplayState(algo?.state);
 
   const pnlPoints = pnlData?.points ?? [];
   const pnlSummary = pnlData?.summary ?? EMPTY_SUMMARY;
