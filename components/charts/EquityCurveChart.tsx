@@ -1,9 +1,9 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { BASE_GRID, BASE_TOOLTIP, BASE_XAXIS, BASE_YAXIS, T } from "@/lib/echarts";
 import { formatRupee } from "@/lib/format";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 interface EquityCurveChartProps {
   equityCurve: [string, number][];
@@ -76,13 +76,5 @@ export function EquityCurveChart({
     };
   }, [equityCurve]);
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height, width: "100%" }}
-      notMerge={false}
-      lazyUpdate={true}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={height} data-testid={testId} />;
 }

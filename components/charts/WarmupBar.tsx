@@ -1,8 +1,8 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { T } from "@/lib/echarts";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 interface WarmupBarProps {
   barsSeen: number;
@@ -42,12 +42,5 @@ export function WarmupBar({ barsSeen, warmupTarget, "data-testid": testId }: War
     [pct, complete, color],
   );
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height: 28, width: "100%" }}
-      notMerge={false}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={28} lazyUpdate={false} data-testid={testId} />;
 }

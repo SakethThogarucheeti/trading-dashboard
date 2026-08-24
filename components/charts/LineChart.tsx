@@ -1,9 +1,9 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { BASE_GRID, BASE_LEGEND, BASE_TOOLTIP, BASE_XAXIS, BASE_YAXIS, SERIES_COLORS, T } from "@/lib/echarts";
 import { formatTimeIST } from "@/lib/format";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 export interface LineSeriesData {
   ts: string;
@@ -96,13 +96,5 @@ export function LineChart({
     };
   }, [series, yFormatter, tooltipFormatter]);
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height, width: "100%" }}
-      notMerge={false}
-      lazyUpdate={true}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={height} data-testid={testId} />;
 }

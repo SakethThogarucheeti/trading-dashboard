@@ -1,10 +1,10 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { BASE_GRID, BASE_TOOLTIP, BASE_XAXIS, BASE_YAXIS, T } from "@/lib/echarts";
 import { formatTimeIST } from "@/lib/format";
 import type { Candle } from "@/lib/api";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 interface CandleChartProps {
   candles: Candle[];
@@ -82,13 +82,5 @@ export function CandleChart({ candles, height = 320, "data-testid": testId }: Ca
     };
   }, [candles]);
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height, width: "100%" }}
-      notMerge={false}
-      lazyUpdate={true}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={height} data-testid={testId} />;
 }

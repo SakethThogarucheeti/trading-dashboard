@@ -1,8 +1,8 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { T } from "@/lib/echarts";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 interface RuinGaugeProps {
   probabilityOfRuin: number;
@@ -48,12 +48,5 @@ export function RuinGauge({ probabilityOfRuin, height = 200, "data-testid": test
     [pct],
   );
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height, width: "100%" }}
-      notMerge={false}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={height} lazyUpdate={false} data-testid={testId} />;
 }

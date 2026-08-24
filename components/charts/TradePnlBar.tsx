@@ -1,9 +1,9 @@
 "use client";
 
-import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { BASE_GRID, BASE_TOOLTIP, BASE_XAXIS, BASE_YAXIS, T } from "@/lib/echarts";
 import type { TradeRecord } from "@/lib/api";
+import { ChartCanvas } from "@/components/charts/ChartCanvas";
 
 interface TradePnlBarProps {
   trades: TradeRecord[];
@@ -55,13 +55,5 @@ export function TradePnlBar({ trades, height = 200, "data-testid": testId }: Tra
     };
   }, [trades]);
 
-  return (
-    <ReactECharts
-      option={option}
-      style={{ height, width: "100%" }}
-      notMerge={false}
-      lazyUpdate={true}
-      data-testid={testId}
-    />
-  );
+  return <ChartCanvas option={option} height={height} data-testid={testId} />;
 }
