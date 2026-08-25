@@ -8,24 +8,8 @@ import { DrawdownChart } from "@/components/charts/DrawdownChart";
 import { TradePnlBar } from "@/components/charts/TradePnlBar";
 import { DataTable } from "@/components/ui/DataTable";
 import { HeaderStrip } from "@/components/ui/HeaderStrip";
+import { LabelValueRow } from "@/components/ui/LabelValueRow";
 import { SectionCard } from "@/components/ui/SectionCard";
-
-function MetricRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "6px 0",
-        borderBottom: `1px solid ${T.border}`,
-        fontSize: 13,
-      }}
-    >
-      <span style={{ color: T.muted }}>{label}</span>
-      <span style={{ color: T.text, fontVariantNumeric: "tabular-nums" }}>{value}</span>
-    </div>
-  );
-}
 
 export function BacktestView({ report }: { report: BacktestReport }) {
   return (
@@ -58,15 +42,15 @@ export function BacktestView({ report }: { report: BacktestReport }) {
       <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 16 }}>
         {/* Metrics card */}
         <SectionCard title="Metrics">
-          <MetricRow label="Sharpe Ratio" value={report.sharpe_ratio.toFixed(3)} />
-          <MetricRow label="Max Drawdown" value={formatPct(report.max_drawdown)} />
-          <MetricRow label="Win Rate" value={formatPct(report.win_rate)} />
-          <MetricRow label="Profit Factor" value={report.profit_factor.toFixed(3)} />
-          <MetricRow label="CAGR" value={formatPct(report.cagr)} />
-          <MetricRow label="Calmar Ratio" value={report.calmar_ratio.toFixed(3)} />
-          <MetricRow label="Total Trades" value={String(report.total_trades)} />
-          <MetricRow label="Initial Equity" value={formatRupee(report.initial_equity)} />
-          <MetricRow label="Final Equity" value={formatRupee(report.final_equity)} />
+          <LabelValueRow label="Sharpe Ratio" value={report.sharpe_ratio.toFixed(3)} />
+          <LabelValueRow label="Max Drawdown" value={formatPct(report.max_drawdown)} />
+          <LabelValueRow label="Win Rate" value={formatPct(report.win_rate)} />
+          <LabelValueRow label="Profit Factor" value={report.profit_factor.toFixed(3)} />
+          <LabelValueRow label="CAGR" value={formatPct(report.cagr)} />
+          <LabelValueRow label="Calmar Ratio" value={report.calmar_ratio.toFixed(3)} />
+          <LabelValueRow label="Total Trades" value={String(report.total_trades)} />
+          <LabelValueRow label="Initial Equity" value={formatRupee(report.initial_equity)} />
+          <LabelValueRow label="Final Equity" value={formatRupee(report.final_equity)} />
         </SectionCard>
 
         {/* Trade table */}
