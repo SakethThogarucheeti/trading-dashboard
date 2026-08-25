@@ -10,38 +10,12 @@ import { AlgoPnlMatrix } from "@/components/panels/AlgoPnlMatrix";
 import { StrategyDetailView } from "@/components/panels/StrategyDetailView";
 import { SessionSelector } from "@/components/ui/SessionSelector";
 import { AlgoSelector } from "@/components/ui/AlgoSelector";
+import { TitledCard as Card } from "@/components/ui/TitledCard";
 import { useDashboardStore } from "@/store";
 
 export const Route = createFileRoute("/")({
   component: LiveDashboardPage,
 });
-
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        backgroundColor: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 8,
-        padding: 16,
-      }}
-    >
-      <div
-        style={{
-          color: T.muted,
-          fontSize: 11,
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          marginBottom: 12,
-        }}
-      >
-        {title}
-      </div>
-      {children}
-    </div>
-  );
-}
 
 export function LiveDashboardPage() {
   const algoName = useDashboardStore((s) => s.algoName);

@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchLiveReport } from "@/lib/api";
 import type { LiveReport } from "@/lib/api";
 import { T } from "@/lib/echarts";
+import { DataTable } from "@/components/ui/DataTable";
+import { TitledCard } from "@/components/ui/TitledCard";
 import { z } from "zod";
 
 export const searchSchema = z.object({
@@ -17,29 +19,9 @@ export const Route = createFileRoute("/reports/live")({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        backgroundColor: T.surface,
-        border: `1px solid ${T.border}`,
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 16,
-      }}
-    >
-      <div
-        style={{
-          color: T.muted,
-          fontSize: 11,
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          marginBottom: 12,
-        }}
-      >
-        {title}
-      </div>
+    <TitledCard title={title} style={{ marginBottom: 16 }}>
       {children}
-    </div>
+    </TitledCard>
   );
 }
 
@@ -202,31 +184,24 @@ export function LiveReportPage() {
 
           {report.trades_by_symbol.length > 0 && (
             <Section title="Trades by Symbol">
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                <thead>
-                  <tr style={{ color: T.muted }}>
-                    {["Symbol", "Buys", "Sells", "Volume", "Cash Flow"].map((h) => (
-                      <th key={h} style={{ textAlign: "left", padding: "4px 8px", fontWeight: 500 }}>
-                        {h}
-                      </th>
-                    ))}
+              <DataTable
+                columns={["Symbol", "Buys", "Sells", "Volume", "Cash Flow"].map((label) => ({ label }))}
+                isEmpty={report.trades_by_symbol.length === 0}
+                emptyMessage="No trades"
+              >
+                {report.trades_by_symbol.map((row) => (
+                  <tr key={row.symbol} style={{ borderTop: `1px solid ${T.border}`, color: T.text }}>
+                    <td style={{ padding: "4px 8px" }}>{row.symbol}</td>
+                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.buys}</td>
+                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.sells}</td>
+                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.volume}</td>
+                    <td style={{ padding: "4px 8px", textAlign: "right", color: row.cash_flow >= 0 ? T.pos : T.neg }}>
+                      {row.cash_flow >= 0 ? "+" : ""}
+                      {rupeeStr(row.cash_flow)}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {report.trades_by_symbol.map((row) => (
-                    <tr key={row.symbol} style={{ borderTop: `1px solid ${T.border}`, color: T.text }}>
-                      <td style={{ padding: "4px 8px" }}>{row.symbol}</td>
-                      <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.buys}</td>
-                      <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.sells}</td>
-                      <td style={{ padding: "4px 8px", textAlign: "right" }}>{row.volume}</td>
-                      <td style={{ padding: "4px 8px", textAlign: "right", color: row.cash_flow >= 0 ? T.pos : T.neg }}>
-                        {row.cash_flow >= 0 ? "+" : ""}
-                        {rupeeStr(row.cash_flow)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </DataTable>
             </Section>
           )}
         </>
