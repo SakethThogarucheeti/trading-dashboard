@@ -4,6 +4,7 @@ import { fetchLiveReport } from "@/lib/api";
 import type { LiveReport } from "@/lib/api";
 import { T } from "@/lib/echarts";
 import { DataTable } from "@/components/ui/DataTable";
+import { LabelValueRow } from "@/components/ui/LabelValueRow";
 import { TitledCard } from "@/components/ui/TitledCard";
 import { z } from "zod";
 
@@ -22,23 +23,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <TitledCard title={title} style={{ marginBottom: 16 }}>
       {children}
     </TitledCard>
-  );
-}
-
-function StatRow({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "6px 0",
-        borderBottom: `1px solid ${T.border}`,
-        fontSize: 13,
-      }}
-    >
-      <span style={{ color: T.muted }}>{label}</span>
-      <span style={{ color: T.text, fontVariantNumeric: "tabular-nums" }}>{value}</span>
-    </div>
   );
 }
 
@@ -128,38 +112,38 @@ export function LiveReportPage() {
           </div>
 
           <Section title="Signal Funnel">
-            <StatRow label="Candles Emitted" value={report.signal_funnel.candles_emitted} />
-            <StatRow label="Signals Generated" value={report.signal_funnel.signals_generated} />
-            <StatRow label="Signals Accepted" value={report.signal_funnel.signals_accepted} />
-            <StatRow label="Signals Rejected" value={report.signal_funnel.signals_rejected} />
-            <StatRow label="Acceptance Rate" value={`${(report.signal_funnel.acceptance_rate * 100).toFixed(1)}%`} />
+            <LabelValueRow label="Candles Emitted" value={report.signal_funnel.candles_emitted} />
+            <LabelValueRow label="Signals Generated" value={report.signal_funnel.signals_generated} />
+            <LabelValueRow label="Signals Accepted" value={report.signal_funnel.signals_accepted} />
+            <LabelValueRow label="Signals Rejected" value={report.signal_funnel.signals_rejected} />
+            <LabelValueRow label="Acceptance Rate" value={`${(report.signal_funnel.acceptance_rate * 100).toFixed(1)}%`} />
             {Object.entries(report.signal_funnel.rejection_reasons).map(([reason, count]) => (
-              <StatRow key={reason} label={`  ${reason}`} value={count} />
+              <LabelValueRow key={reason} label={`  ${reason}`} value={count} />
             ))}
           </Section>
 
           <Section title="Order Funnel">
-            <StatRow label="Placed" value={report.order_funnel.placed} />
-            <StatRow label="Filled" value={report.order_funnel.filled} />
-            <StatRow label="Rejected" value={report.order_funnel.rejected} />
-            <StatRow label="Cancelled" value={report.order_funnel.cancelled} />
-            <StatRow label="Fill Rate" value={`${(report.order_funnel.fill_rate * 100).toFixed(1)}%`} />
+            <LabelValueRow label="Placed" value={report.order_funnel.placed} />
+            <LabelValueRow label="Filled" value={report.order_funnel.filled} />
+            <LabelValueRow label="Rejected" value={report.order_funnel.rejected} />
+            <LabelValueRow label="Cancelled" value={report.order_funnel.cancelled} />
+            <LabelValueRow label="Fill Rate" value={`${(report.order_funnel.fill_rate * 100).toFixed(1)}%`} />
           </Section>
 
           <Section title="P&L Summary">
-            <StatRow label="Gross P&L" value={rupeeStr(report.pnl_summary.gross)} />
-            <StatRow label="Trading Costs" value={`-${rupeeStr(report.pnl_summary.costs)}`} />
-            <StatRow label="Net P&L" value={rupeeStr(report.pnl_summary.net)} />
+            <LabelValueRow label="Gross P&L" value={rupeeStr(report.pnl_summary.gross)} />
+            <LabelValueRow label="Trading Costs" value={`-${rupeeStr(report.pnl_summary.costs)}`} />
+            <LabelValueRow label="Net P&L" value={rupeeStr(report.pnl_summary.net)} />
             {report.pnl_summary.algo_pct != null && (
-              <StatRow label="Algo Return" value={pctStr(report.pnl_summary.algo_pct / 100)} />
+              <LabelValueRow label="Algo Return" value={pctStr(report.pnl_summary.algo_pct / 100)} />
             )}
           </Section>
 
           {report.benchmark && (
             <Section title="Benchmark: Nifty 50">
-              <StatRow label="Nifty Open" value={report.benchmark.nifty_open?.toLocaleString("en-IN") ?? "—"} />
-              <StatRow label="Nifty Close" value={report.benchmark.nifty_close?.toLocaleString("en-IN") ?? "—"} />
-              <StatRow
+              <LabelValueRow label="Nifty Open" value={report.benchmark.nifty_open?.toLocaleString("en-IN") ?? "—"} />
+              <LabelValueRow label="Nifty Close" value={report.benchmark.nifty_close?.toLocaleString("en-IN") ?? "—"} />
+              <LabelValueRow
                 label="Nifty Return"
                 value={
                   report.benchmark.pct_return !== null
@@ -168,13 +152,13 @@ export function LiveReportPage() {
                 }
               />
               {report.benchmark.algo_pct !== null && (
-                <StatRow
+                <LabelValueRow
                   label="Algo Return"
                   value={`${report.benchmark.algo_pct >= 0 ? "+" : ""}${report.benchmark.algo_pct.toFixed(2)}%`}
                 />
               )}
               {report.benchmark.alpha !== null && (
-                <StatRow
+                <LabelValueRow
                   label="Alpha"
                   value={`${report.benchmark.alpha >= 0 ? "+" : ""}${report.benchmark.alpha.toFixed(2)}%`}
                 />
