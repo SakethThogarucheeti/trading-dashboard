@@ -5,7 +5,7 @@ import type { LiveReport } from "@/lib/api";
 import { T } from "@/lib/echarts";
 import { z } from "zod";
 
-const searchSchema = z.object({
+export const searchSchema = z.object({
   period: z.enum(["day", "week", "month"]).catch("day"),
   date: z.string().optional(),
 });
@@ -70,7 +70,7 @@ function rupeeStr(v: number): string {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(v);
 }
 
-function LiveReportPage() {
+export function LiveReportPage() {
   const { period, date } = Route.useSearch();
 
   const { data: report, error } = useQuery<LiveReport>({

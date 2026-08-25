@@ -43,7 +43,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-function LiveDashboardPage() {
+export function LiveDashboardPage() {
   const algoName = useDashboardStore((s) => s.algoName);
 
   return (
