@@ -7,6 +7,8 @@ import { EquityCurveChart } from "@/components/charts/EquityCurveChart";
 import { DrawdownChart } from "@/components/charts/DrawdownChart";
 import { TradePnlBar } from "@/components/charts/TradePnlBar";
 import { DataTable } from "@/components/ui/DataTable";
+import { HeaderStrip } from "@/components/ui/HeaderStrip";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 function MetricRow({ label, value }: { label: string; value: string }) {
   return (
@@ -29,30 +31,13 @@ export function BacktestView({ report }: { report: BacktestReport }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header strip */}
-      <div
-        style={{
-          display: "flex",
-          gap: 32,
-          padding: "12px 16px",
-          backgroundColor: T.surface,
-          border: `1px solid ${T.border}`,
-          borderRadius: 8,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Algo</div>
-          <div style={{ color: T.text, fontWeight: 600 }}>{report.algo_name}</div>
-        </div>
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Period</div>
-          <div style={{ color: T.text }}>{report.start.slice(0, 10)} → {report.end.slice(0, 10)}</div>
-        </div>
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Session</div>
-          <div style={{ color: T.text, fontFamily: "monospace" }}>{report.session_id}</div>
-        </div>
-      </div>
+      <HeaderStrip
+        items={[
+          { label: "Algo", value: report.algo_name, emphasis: "bold" },
+          { label: "Period", value: `${report.start.slice(0, 10)} → ${report.end.slice(0, 10)}` },
+          { label: "Session", value: report.session_id, emphasis: "mono" },
+        ]}
+      />
 
       {/* Charts row */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -72,17 +57,7 @@ export function BacktestView({ report }: { report: BacktestReport }) {
       {/* Metrics + trade table row */}
       <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 16 }}>
         {/* Metrics card */}
-        <div
-          style={{
-            backgroundColor: T.surface,
-            border: `1px solid ${T.border}`,
-            borderRadius: 8,
-            padding: 16,
-          }}
-        >
-          <div style={{ color: T.muted, fontSize: 11, fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>
-            Metrics
-          </div>
+        <SectionCard title="Metrics">
           <MetricRow label="Sharpe Ratio" value={report.sharpe_ratio.toFixed(3)} />
           <MetricRow label="Max Drawdown" value={formatPct(report.max_drawdown)} />
           <MetricRow label="Win Rate" value={formatPct(report.win_rate)} />
@@ -92,21 +67,10 @@ export function BacktestView({ report }: { report: BacktestReport }) {
           <MetricRow label="Total Trades" value={String(report.total_trades)} />
           <MetricRow label="Initial Equity" value={formatRupee(report.initial_equity)} />
           <MetricRow label="Final Equity" value={formatRupee(report.final_equity)} />
-        </div>
+        </SectionCard>
 
         {/* Trade table */}
-        <div
-          style={{
-            backgroundColor: T.surface,
-            border: `1px solid ${T.border}`,
-            borderRadius: 8,
-            padding: 16,
-            overflowX: "auto",
-          }}
-        >
-          <div style={{ color: T.muted, fontSize: 11, fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>
-            Trades
-          </div>
+        <SectionCard title="Trades" overflowX>
           <DataTable
             columns={["Symbol", "Side", "Qty", "Entry", "Exit", "P&L"].map((label) => ({ label }))}
             isEmpty={report.trades.length === 0}
@@ -139,7 +103,7 @@ export function BacktestView({ report }: { report: BacktestReport }) {
               </tr>
             ))}
           </DataTable>
-        </div>
+        </SectionCard>
       </div>
     </div>
   );
