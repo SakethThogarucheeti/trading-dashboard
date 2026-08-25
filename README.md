@@ -1,6 +1,6 @@
 # trading-dashboard
 
-Next.js live monitoring dashboard for the [trading-platform](https://github.com/SakethThogarucheeti/trading-platform).
+TanStack Start live monitoring dashboard for the [trading-platform](https://github.com/SakethThogarucheeti/trading-platform).
 
 Part of the [algo-trader](https://github.com/SakethThogarucheeti/algo-trader) system.
 
@@ -14,12 +14,12 @@ Part of the [algo-trader](https://github.com/SakethThogarucheeti/algo-trader) sy
 
 ## Stack
 
-- Next.js 16 (App Router), React 19
+- TanStack Start + TanStack Router (file-based routes under `src/routes/`), React 19
 - TailwindCSS 4
 - ECharts (via echarts-for-react)
 - Zustand (client state)
 - TanStack Query (server state + polling)
-- Vitest (unit tests), Playwright (E2E)
+- Vitest + Testing Library (unit tests), Playwright (E2E, `playwright.config.ts`)
 
 ## Prerequisites
 
@@ -36,14 +36,11 @@ npm ci
 
 **2. Configure environment:**
 
-```bash
-cp .env.local.example .env.local
-```
-
-`.env.local`:
+The API proxy route (`src/routes/api.$.ts`) reads `VITE_API_URL`, defaulting to
+`http://localhost:8081` if unset:
 
 ```dotenv
-NEXT_PUBLIC_API_URL=http://localhost:8081
+VITE_API_URL=http://localhost:8081
 ```
 
 ## Running
@@ -70,22 +67,25 @@ npm test
 npm run test:watch
 
 # E2E tests (requires the app to be running)
-npm run test:e2e
+npx playwright test
 ```
 
 ## Project structure
 
 ```
 trading-dashboard/
-├── app/                     # Next.js App Router pages
-│   ├── page.tsx             # Live dashboard
+├── src/routes/              # TanStack Router file-based routes
+│   ├── __root.tsx           # Document shell
+│   ├── index.tsx            # Live dashboard
+│   ├── login.tsx
+│   ├── api.$.ts             # Server-side proxy to trading-platform's API
 │   └── reports/             # Report views (backtest, monte carlo, etc.)
 ├── components/
-│   ├── charts/              # ECharts wrappers
-│   ├── panels/              # Dashboard panels (P&L, positions, signals)
-│   ├── reports/             # Report renderer and views
-│   └── ui/                  # Shared UI primitives
-├── hooks/                   # useDecisionStream and other hooks
-├── lib/                     # API client, formatters, report registry
-└── store.ts                 # Zustand global store
+│   ├── charts/           # ECharts wrappers
+│   ├── panels/           # Dashboard panels (P&L, positions, signals)
+│   ├── reports/          # Report renderer and views
+│   └── ui/               # Shared UI primitives
+├── hooks/                # useDecisionStream and other hooks
+├── lib/                  # API client, formatters, report registry
+└── store.ts              # Zustand global store
 ```
