@@ -5,6 +5,7 @@ import { fetchSignals } from "@/lib/api";
 import { formatTimeIST } from "@/lib/format";
 import { T } from "@/lib/echarts";
 import { useDashboardStore } from "@/store";
+import { DataTable } from "@/components/ui/DataTable";
 
 const STEP_COLOR: Record<string, string> = {
   SIGNAL_ACCEPTED: T.pos,
@@ -36,40 +37,31 @@ export function SignalsTable() {
   });
 
   return (
-    <div style={{ fontFamily: "ui-monospace, monospace", overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-        <thead>
-          <tr style={{ color: T.muted }}>
-            <th style={{ textAlign: "left", padding: "4px 8px" }}>Time (IST)</th>
-            <th style={{ textAlign: "left", padding: "4px 8px" }}>Symbol</th>
-            <th style={{ textAlign: "left", padding: "4px 8px" }}>Algo</th>
-            <th style={{ textAlign: "left", padding: "4px 8px" }}>Step</th>
-            <th style={{ textAlign: "left", padding: "4px 8px" }}>Context</th>
-          </tr>
-        </thead>
-        <tbody>
-          {signals.length === 0 && (
-            <tr>
-              <td colSpan={5} style={{ color: T.muted, padding: "8px" }}>
-                No signals today
-              </td>
-            </tr>
-          )}
-          {signals.map((s, i) => (
-            <tr key={i} style={{ borderTop: `1px solid ${T.border}` }}>
-              <td style={{ padding: "6px 8px", color: T.muted }}>
-                {formatTimeIST(s.created_at, true)} IST
-              </td>
-              <td style={{ padding: "6px 8px", color: T.text, fontWeight: 600 }}>{s.symbol}</td>
-              <td style={{ padding: "6px 8px", color: T.muted }}>{s.algo_name}</td>
-              <td style={{ padding: "6px 8px" }}>
-                <span style={{ color: STEP_COLOR[s.step] ?? T.text }}>{s.step}</span>
-              </td>
-              <td style={{ padding: "6px 8px", color: T.muted }}>{contextSummary(s.context)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      columns={[
+        { label: "Time (IST)" },
+        { label: "Symbol" },
+        { label: "Algo" },
+        { label: "Step" },
+        { label: "Context" },
+      ]}
+      isEmpty={signals.length === 0}
+      emptyMessage="No signals today"
+      scrollX
+    >
+      {signals.map((s, i) => (
+        <tr key={i} style={{ borderTop: `1px solid ${T.border}` }}>
+          <td style={{ padding: "6px 8px", color: T.muted }}>
+            {formatTimeIST(s.created_at, true)} IST
+          </td>
+          <td style={{ padding: "6px 8px", color: T.text, fontWeight: 600 }}>{s.symbol}</td>
+          <td style={{ padding: "6px 8px", color: T.muted }}>{s.algo_name}</td>
+          <td style={{ padding: "6px 8px" }}>
+            <span style={{ color: STEP_COLOR[s.step] ?? T.text }}>{s.step}</span>
+          </td>
+          <td style={{ padding: "6px 8px", color: T.muted }}>{contextSummary(s.context)}</td>
+        </tr>
+      ))}
+    </DataTable>
   );
 }
