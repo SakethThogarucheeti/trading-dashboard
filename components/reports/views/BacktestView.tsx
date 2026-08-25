@@ -6,6 +6,7 @@ import { formatPct, formatRupee } from "@/lib/format";
 import { EquityCurveChart } from "@/components/charts/EquityCurveChart";
 import { DrawdownChart } from "@/components/charts/DrawdownChart";
 import { TradePnlBar } from "@/components/charts/TradePnlBar";
+import { DataTable } from "@/components/ui/DataTable";
 
 function MetricRow({ label, value }: { label: string; value: string }) {
   return (
@@ -106,49 +107,38 @@ export function BacktestView({ report }: { report: BacktestReport }) {
           <div style={{ color: T.muted, fontSize: 11, fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>
             Trades
           </div>
-          {report.trades.length === 0 ? (
-            <p style={{ color: T.muted, fontSize: 13 }}>No trades</p>
-          ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-              <thead>
-                <tr style={{ color: T.muted }}>
-                  {["Symbol", "Side", "Qty", "Entry", "Exit", "P&L"].map((h) => (
-                    <th key={h} style={{ textAlign: "left", padding: "4px 8px", fontWeight: 500 }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {report.trades.map((t, i) => (
-                  <tr
-                    key={i}
-                    style={{
-                      borderTop: `1px solid ${T.border}`,
-                      color: T.text,
-                    }}
-                  >
-                    <td style={{ padding: "4px 8px" }}>{t.symbol}</td>
-                    <td style={{ padding: "4px 8px" }}>{t.side}</td>
-                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.qty}</td>
-                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.entry_price.toFixed(2)}</td>
-                    <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.exit_price.toFixed(2)}</td>
-                    <td
-                      style={{
-                        padding: "4px 8px",
-                        textAlign: "right",
-                        color: t.pnl >= 0 ? T.pos : T.neg,
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {t.pnl >= 0 ? "+" : ""}
-                      {t.pnl.toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <DataTable
+            columns={["Symbol", "Side", "Qty", "Entry", "Exit", "P&L"].map((label) => ({ label }))}
+            isEmpty={report.trades.length === 0}
+            emptyMessage="No trades"
+          >
+            {report.trades.map((t, i) => (
+              <tr
+                key={i}
+                style={{
+                  borderTop: `1px solid ${T.border}`,
+                  color: T.text,
+                }}
+              >
+                <td style={{ padding: "4px 8px" }}>{t.symbol}</td>
+                <td style={{ padding: "4px 8px" }}>{t.side}</td>
+                <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.qty}</td>
+                <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.entry_price.toFixed(2)}</td>
+                <td style={{ padding: "4px 8px", textAlign: "right" }}>{t.exit_price.toFixed(2)}</td>
+                <td
+                  style={{
+                    padding: "4px 8px",
+                    textAlign: "right",
+                    color: t.pnl >= 0 ? T.pos : T.neg,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {t.pnl >= 0 ? "+" : ""}
+                  {t.pnl.toFixed(2)}
+                </td>
+              </tr>
+            ))}
+          </DataTable>
         </div>
       </div>
     </div>
