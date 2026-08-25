@@ -6,31 +6,19 @@ import { formatPct } from "@/lib/format";
 import { EquityCurveChart } from "@/components/charts/EquityCurveChart";
 import { StatCard } from "@/components/ui/StatCard";
 import { DataTable } from "@/components/ui/DataTable";
+import { HeaderStrip } from "@/components/ui/HeaderStrip";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 export function WalkForwardView({ report }: { report: WalkForwardReport }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header */}
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: T.surface,
-          border: `1px solid ${T.border}`,
-          borderRadius: 8,
-          display: "flex",
-          gap: 32,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Windows</div>
-          <div style={{ color: T.text, fontWeight: 600 }}>{report.windows.length}</div>
-        </div>
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Session</div>
-          <div style={{ color: T.text, fontFamily: "monospace" }}>{report.session_id}</div>
-        </div>
-      </div>
+      <HeaderStrip
+        items={[
+          { label: "Windows", value: report.windows.length, emphasis: "bold" },
+          { label: "Session", value: report.session_id, emphasis: "mono" },
+        ]}
+      />
 
       {/* Aggregate metrics */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
@@ -51,18 +39,7 @@ export function WalkForwardView({ report }: { report: WalkForwardReport }) {
       <EquityCurveChart equityCurve={report.combined_equity_curve} height={300} />
 
       {/* Per-window table */}
-      <div
-        style={{
-          backgroundColor: T.surface,
-          border: `1px solid ${T.border}`,
-          borderRadius: 8,
-          padding: 16,
-          overflowX: "auto",
-        }}
-      >
-        <div style={{ color: T.muted, fontSize: 11, fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>
-          Windows
-        </div>
+      <SectionCard title="Windows" overflowX>
         <DataTable
           columns={["#", "Period", "Sharpe", "Max DD", "Win Rate", "Total Trades", "Final Equity"].map((label) => ({
             label,
@@ -94,7 +71,7 @@ export function WalkForwardView({ report }: { report: WalkForwardReport }) {
             </tr>
           ))}
         </DataTable>
-      </div>
+      </SectionCard>
     </div>
   );
 }

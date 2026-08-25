@@ -7,35 +7,19 @@ import { ReturnDistHistogram } from "@/components/charts/ReturnDistHistogram";
 import { DrawdownDistHistogram } from "@/components/charts/DrawdownDistHistogram";
 import { RuinGauge } from "@/components/charts/RuinGauge";
 import { StatCard } from "@/components/ui/StatCard";
+import { HeaderStrip } from "@/components/ui/HeaderStrip";
 
 export function MonteCarloView({ report }: { report: MonteCarloReport }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header */}
-      <div
-        style={{
-          padding: "12px 16px",
-          backgroundColor: T.surface,
-          border: `1px solid ${T.border}`,
-          borderRadius: 8,
-          display: "flex",
-          gap: 32,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Trials</div>
-          <div style={{ color: T.text, fontWeight: 600 }}>{report.n_trials.toLocaleString()}</div>
-        </div>
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Method</div>
-          <div style={{ color: T.text }}>{report.method}</div>
-        </div>
-        <div>
-          <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Session</div>
-          <div style={{ color: T.text, fontFamily: "monospace" }}>{report.session_id}</div>
-        </div>
-      </div>
+      <HeaderStrip
+        items={[
+          { label: "Trials", value: report.n_trials.toLocaleString(), emphasis: "bold" },
+          { label: "Method", value: report.method },
+          { label: "Session", value: report.session_id, emphasis: "mono" },
+        ]}
+      />
 
       {/* Stat cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
