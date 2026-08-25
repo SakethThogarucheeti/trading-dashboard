@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchAlgos } from "@/lib/api";
 import { useDashboardStore } from "@/store";
-import { T } from "@/lib/echarts";
+import { StoreSelect } from "@/components/ui/StoreSelect";
 
 export function AlgoSelector() {
   const { algoName, setAlgoName } = useDashboardStore();
@@ -14,26 +14,11 @@ export function AlgoSelector() {
   });
 
   return (
-    <select
+    <StoreSelect
       value={algoName}
-      onChange={(e) => setAlgoName(e.target.value)}
-      style={{
-        backgroundColor: T.surface,
-        color: T.text,
-        border: `1px solid ${T.border}`,
-        borderRadius: 4,
-        padding: "4px 8px",
-        fontSize: 12,
-        fontFamily: "ui-monospace, monospace",
-        cursor: "pointer",
-      }}
-    >
-      <option value="">All strategies</option>
-      {algos.map((a) => (
-        <option key={a.name} value={a.name}>
-          {a.name}
-        </option>
-      ))}
-    </select>
+      onChange={setAlgoName}
+      placeholderLabel="All strategies"
+      options={algos.map((a) => ({ value: a.name, label: a.name }))}
+    />
   );
 }

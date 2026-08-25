@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchSessions } from "@/lib/api";
 import { useDashboardStore } from "@/store";
-import { T } from "@/lib/echarts";
+import { StoreSelect } from "@/components/ui/StoreSelect";
 
 export function SessionSelector() {
   const { sessionId, setSessionId } = useDashboardStore();
@@ -14,28 +14,13 @@ export function SessionSelector() {
   });
 
   return (
-    <select
+    <StoreSelect
       value={sessionId}
-      onChange={(e) => setSessionId(e.target.value)}
-      style={{
-        backgroundColor: T.surface,
-        color: T.text,
-        border: `1px solid ${T.border}`,
-        borderRadius: 4,
-        padding: "4px 8px",
-        fontSize: 12,
-        fontFamily: "ui-monospace, monospace",
-        cursor: "pointer",
-      }}
-    >
-      <option value="">live</option>
-      {sessions
+      onChange={setSessionId}
+      placeholderLabel="live"
+      options={sessions
         .filter((s): s is string => s !== null)
-        .map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-    </select>
+        .map((s) => ({ value: s, label: s }))}
+    />
   );
 }

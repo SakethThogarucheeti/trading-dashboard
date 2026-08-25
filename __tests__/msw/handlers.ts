@@ -75,6 +75,8 @@ export const mockPnlByAlgo = {
   rsi_mean_rev: { gross: -200, costs: 30, net: -230 },
 };
 
+export const mockSessionIds: (string | null)[] = ["bt-test-001", "mc-test-001", null];
+
 export const mockAlgos = [
   {
     name: "ema_crossover",
@@ -96,6 +98,7 @@ export const handlers = [
   http.get("/api/positions", () => HttpResponse.json([])),
   http.get("/api/health", () => HttpResponse.json([])),
   http.get("/api/algos", () => HttpResponse.json(mockAlgos)),
+  http.get("/api/sessions", () => HttpResponse.json(mockSessionIds)),
   http.get("/api/signals", () => HttpResponse.json([])),
   http.get("/api/pnl/by-algo", () => HttpResponse.json(mockPnlByAlgo)),
   http.get("/api/pnl", () =>
