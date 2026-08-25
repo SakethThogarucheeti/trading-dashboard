@@ -1,5 +1,6 @@
 // All fetch wrappers for the FastAPI backend.
-// Relative URLs go through Next.js rewrites → process.env.API_URL.
+// Relative URLs go through the TanStack Start server route (src/routes/api.$.ts),
+// which proxies to process.env.VITE_API_URL.
 
 // ---------------------------------------------------------------------------
 // Shared types
