@@ -231,11 +231,18 @@ export const fetchAlgos = () => get<AlgoConfig[]>("/api/algos");
 
 export const fetchSettings = () => get<{ candle_intervals: string[] }>("/api/settings");
 
-export const fetchSignals = (sessionId = "", algoName = "") => {
-  const params = new URLSearchParams();
+function withSessionAlgoParams(
+  params: URLSearchParams,
+  sessionId: string,
+  algoName: string,
+): URLSearchParams {
   if (sessionId) params.set("session_id", sessionId);
   if (algoName) params.set("algo_name", algoName);
-  const qs = params.toString();
+  return params;
+}
+
+export const fetchSignals = (sessionId = "", algoName = "") => {
+  const qs = withSessionAlgoParams(new URLSearchParams(), sessionId, algoName).toString();
   return get<Signal[]>(`/api/signals${qs ? `?${qs}` : ""}`);
 };
 
@@ -246,17 +253,16 @@ export const fetchTicks = (symbol: string, limit = 500) =>
   get<Tick[]>(`/api/ticks?symbol=${symbol}&limit=${limit}`);
 
 export const fetchPnl = (sessionId = "", algoName = "") => {
-  const params = new URLSearchParams();
-  if (sessionId) params.set("session_id", sessionId);
-  if (algoName) params.set("algo_name", algoName);
-  const qs = params.toString();
+  const qs = withSessionAlgoParams(new URLSearchParams(), sessionId, algoName).toString();
   return get<PnlResponse>(`/api/pnl${qs ? `?${qs}` : ""}`);
 };
 
 export const fetchCharts = (sessionId = "", algoName = "", limit = 500) => {
-  const params = new URLSearchParams({ limit: String(limit) });
-  if (sessionId) params.set("session_id", sessionId);
-  if (algoName) params.set("algo_name", algoName);
+  const params = withSessionAlgoParams(
+    new URLSearchParams({ limit: String(limit) }),
+    sessionId,
+    algoName,
+  );
   return get<ChartsResponse>(`/api/charts?${params}`);
 };
 
