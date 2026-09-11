@@ -1,7 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { fetchAlgos, fetchPnl } from "@/lib/api";
 import { WarmupBar } from "@/components/charts/WarmupBar";
 import { SignalsTable } from "@/components/panels/SignalsTable";
 import { DecisionFeed } from "@/components/panels/DecisionFeed";
@@ -10,41 +8,13 @@ import { LineChart } from "@/components/charts/LineChart";
 import { T } from "@/lib/echarts";
 import { formatTimeIST, formatRupee } from "@/lib/format";
 import { useDashboardStore } from "@/store";
-import { fetchCharts } from "@/lib/api";
-import { deriveAlgoDisplayState } from "@/lib/algoState";
-
-const EMPTY_SUMMARY = { gross: 0, costs: 0, net: 0, nifty_pct: null, nifty_open: null, nifty_close: null };
+import { useStrategyDetail } from "@/hooks/useStrategyDetail";
 
 export function StrategyDetailView() {
   const { algoName, setAlgoName, sessionId } = useDashboardStore();
 
-  const { data: algos = [] } = useQuery({
-    queryKey: ["algos"],
-    queryFn: fetchAlgos,
-    refetchInterval: 5_000,
-  });
-
-  const { data: pnlData } = useQuery({
-    queryKey: ["pnl", sessionId, algoName],
-    queryFn: () => fetchPnl(sessionId, algoName),
-    refetchInterval: 30_000,
-  });
-
-  const { data: charts = {} } = useQuery({
-    queryKey: ["charts", sessionId, algoName],
-    queryFn: () => fetchCharts(sessionId, algoName),
-    refetchInterval: 30_000,
-  });
-
-  const algo = algos.find((a) => a.name === algoName);
-  const { barsSeen, warmupComplete, lastSignalAt, stateEntries } = deriveAlgoDisplayState(algo?.state);
-
-  const pnlPoints = pnlData?.points ?? [];
-  const pnlSummary = pnlData?.summary ?? EMPTY_SUMMARY;
-  const pnlSeries = [
-    { name: "Gross P&L", data: pnlPoints.map((p) => ({ ts: p.ts, value: p.cumulative_gross })), dashed: true },
-    { name: "Net P&L", data: pnlPoints.map((p) => ({ ts: p.ts, value: p.cumulative_net })), showSymbol: true },
-  ];
+  const { algo, barsSeen, warmupComplete, lastSignalAt, stateEntries, pnlPoints, pnlSummary, pnlSeries, charts } =
+    useStrategyDetail(algoName, sessionId);
 
   return (
     <div>
