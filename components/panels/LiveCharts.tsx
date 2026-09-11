@@ -1,84 +1,21 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { fetchCandles, fetchTicks, fetchPnl, fetchCharts, fetchSettings } from "@/lib/api";
+import { useState } from "react";
 import { CandleChart } from "@/components/charts/CandleChart";
 import { LineChart } from "@/components/charts/LineChart";
 import { PnlSummaryStrip } from "@/components/panels/PnlSummaryStrip";
 import { T } from "@/lib/echarts";
 import { formatRupee } from "@/lib/format";
 import { useDashboardStore } from "@/store";
-
-const ALL_INTERVALS = ["1min", "3min", "5min", "10min", "15min", "30min", "60min"];
-const EMPTY_PNL_SUMMARY = { gross: 0, costs: 0, net: 0, nifty_pct: null, nifty_open: null, nifty_close: null };
+import { useLiveChartsData } from "@/hooks/useLiveChartsData";
 
 export function LiveCharts() {
   const { sessionId, symbol, interval, setSymbol, setInterval } = useDashboardStore();
+  const algoName = useDashboardStore((s) => s.algoName);
   const [symbolInput, setSymbolInput] = useState(symbol);
 
-  const { data: settings } = useQuery({
-    queryKey: ["settings"],
-    queryFn: fetchSettings,
-    staleTime: Infinity,
-  });
-  const availableIntervals = settings?.candle_intervals ?? ALL_INTERVALS;
-
-  // Sync interval to first configured interval on initial load
-  useEffect(() => {
-    if (settings?.candle_intervals?.length && !settings.candle_intervals.includes(interval)) {
-      setInterval(settings.candle_intervals[0]);
-    }
-  }, [settings, interval, setInterval]);
-
-  const { data: candles = [] } = useQuery({
-    queryKey: ["candles", symbol, interval],
-    queryFn: () => fetchCandles(symbol, interval, 200),
-    refetchInterval: 30_000,
-  });
-
-  const { data: ticks = [] } = useQuery({
-    queryKey: ["ticks", symbol],
-    queryFn: () => fetchTicks(symbol),
-    refetchInterval: 5_000,
-  });
-
-  const { data: pnlData } = useQuery({
-    queryKey: ["pnl", sessionId],
-    queryFn: () => fetchPnl(sessionId),
-    refetchInterval: 30_000,
-  });
-
-  const algoName = useDashboardStore((s) => s.algoName);
-  const { data: charts = {} } = useQuery({
-    queryKey: ["charts", sessionId, algoName],
-    queryFn: () => fetchCharts(sessionId, algoName),
-    refetchInterval: 30_000,
-  });
-
-  const pnlPoints = pnlData?.points ?? [];
-  const pnlSummary = pnlData?.summary ?? EMPTY_PNL_SUMMARY;
-
-  const pnlSeries = [
-    {
-      name: "Gross P&L",
-      data: pnlPoints.map((p) => ({ ts: p.ts, value: p.cumulative_gross })),
-      dashed: true,
-    },
-    {
-      name: "Net P&L (after costs)",
-      data: pnlPoints.map((p) => ({ ts: p.ts, value: p.cumulative_net })),
-      showSymbol: true,
-    },
-  ];
-
-  const tickSeries = [
-    {
-      name: symbol,
-      data: ticks.map((t) => ({ ts: t.ts, value: t.price })),
-      areaGradient: true,
-    },
-  ];
+  const { availableIntervals, candles, ticks, tickSeries, pnlPoints, pnlSummary, pnlSeries, charts } =
+    useLiveChartsData(symbol, interval, sessionId, algoName, setInterval);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
