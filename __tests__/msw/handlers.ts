@@ -91,6 +91,8 @@ export const mockAlgos = [
   },
 ];
 
+export const mockSettings = { candle_intervals: ["1min", "5min", "15min"] };
+
 export const handlers = [
   http.get("/api/reports/sessions", () => HttpResponse.json(mockSessions)),
   http.get("/api/reports/bt-test-001", () => HttpResponse.json(mockBacktestReport)),
@@ -108,4 +110,7 @@ export const handlers = [
     })
   ),
   http.get("/api/charts", () => HttpResponse.json({})),
+  http.get("/api/settings", () => HttpResponse.json(mockSettings)),
+  http.get("/api/candles", () => HttpResponse.json([])),
+  http.get("/api/ticks", () => HttpResponse.json([])),
 ];
