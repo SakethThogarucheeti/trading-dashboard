@@ -20,14 +20,16 @@ describe("PositionsPanel", () => {
     server.use(
       http.get("/api/positions", () =>
         HttpResponse.json([
-          { symbol: "INFY", instrument_type: "EQ", net_qty: 50, avg_price: 1500.5, updated_at: "2026-08-25T05:00:00Z" },
-          { symbol: "TCS", instrument_type: "EQ", net_qty: -10, avg_price: 3800.0, updated_at: null },
+          { symbol: "INFY", instrument_type: "EQ", algo_name: "momentum", net_qty: 50, avg_price: 1500.5, updated_at: "2026-08-25T05:00:00Z" },
+          { symbol: "TCS", instrument_type: "EQ", algo_name: "mean_reversion", net_qty: -10, avg_price: 3800.0, updated_at: null },
         ]),
       ),
     );
     render(<PositionsPanel />, { wrapper });
     await waitFor(() => expect(screen.getByText("INFY")).toBeInTheDocument());
     expect(screen.getByText("TCS")).toBeInTheDocument();
+    expect(screen.getByText("momentum")).toBeInTheDocument();
+    expect(screen.getByText("mean_reversion")).toBeInTheDocument();
     expect(screen.getByText("+50")).toBeInTheDocument();
     expect(screen.getByText("-10")).toBeInTheDocument();
   });
