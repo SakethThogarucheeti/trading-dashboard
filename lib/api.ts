@@ -9,6 +9,7 @@
 export interface Position {
   symbol: string;
   instrument_type: string;
+  algo_name: string;
   net_qty: number;
   avg_price: number;
   updated_at: string | null;

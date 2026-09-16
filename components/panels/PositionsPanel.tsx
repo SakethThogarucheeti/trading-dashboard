@@ -20,6 +20,7 @@ export function PositionsPanel() {
       columns={[
         { label: "Symbol" },
         { label: "Type" },
+        { label: "Algo" },
         { label: "Qty", align: "right" },
         { label: "Avg Price", align: "right" },
         { label: "Updated (IST)" },
@@ -28,9 +29,13 @@ export function PositionsPanel() {
       emptyMessage="No data"
     >
       {positions.map((p) => (
-        <tr key={p.symbol} style={{ borderTop: `1px solid ${T.border}` }}>
+        <tr
+          key={`${p.symbol}-${p.instrument_type}-${p.algo_name}`}
+          style={{ borderTop: `1px solid ${T.border}` }}
+        >
           <td style={{ padding: "6px 8px", color: T.text, fontWeight: 600 }}>{p.symbol}</td>
           <td style={{ padding: "6px 8px", color: T.muted }}>{p.instrument_type}</td>
+          <td style={{ padding: "6px 8px", color: T.muted }}>{p.algo_name}</td>
           <td
             style={{
               padding: "6px 8px",
